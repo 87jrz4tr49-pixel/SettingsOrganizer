@@ -1,0 +1,9 @@
+Package: com.yourcompany.settingsorganizer
+Name: SettingsOrganizer
+Version: 0.0.1
+Architecture: iphoneos-arm64
+Description: Groups settings items.
+Maintainer: Your Name
+Author: Your Name
+Section: Tweaks
+Depends: preferenceloader
