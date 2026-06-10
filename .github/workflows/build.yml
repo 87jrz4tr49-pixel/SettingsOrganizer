@@ -4,13 +4,16 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container: theos/theos:latest  
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install Theos
+        run: |
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
       - name: Build tweak
         run: |
-          export THEOS=/opt/theos
+          export THEOS=$HOME/theos
+          export TARGET=iphone:latest:14.0
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
       - name: Upload deb
         uses: actions/upload-artifact@v4
