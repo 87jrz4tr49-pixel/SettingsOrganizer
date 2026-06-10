@@ -7,18 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y git make unzip curl
-      - name: Install Theos
+      - name: Install Theos and SDK
         run: |
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
-          mkdir -p $HOME/theos/sdks
-          cd $HOME/theos/sdks
-          curl -LO https://github.com/theos/sdks/raw/master/iPhoneOS16.0.sdk.zip
-          unzip -q iPhoneOS16.0.sdk.zip
-          ln -s iPhoneOS16.0.sdk iPhoneOS.sdk
+          cd $HOME/theos
+          git clone https://github.com/theos/sdks.git sdks
+          cd sdks
+          # Создаём символическую ссылку на нужную версию SDK
+          ln -sf iPhoneOS16.0.sdk iPhoneOS.sdk
       - name: Build tweak
         run: |
           export THEOS=$HOME/theos
