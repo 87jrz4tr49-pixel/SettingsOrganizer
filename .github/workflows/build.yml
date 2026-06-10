@@ -1,4 +1,4 @@
-name: Build
+name: Build Tweak
 
 on: [push]
 
@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git make unzip curl
       - name: Install Theos
         run: |
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
@@ -15,12 +19,13 @@ jobs:
           curl -LO https://github.com/theos/sdks/raw/master/iPhoneOS16.0.sdk.zip
           unzip -q iPhoneOS16.0.sdk.zip
           ln -s iPhoneOS16.0.sdk iPhoneOS.sdk
-      - name: Build
+      - name: Build tweak
         run: |
           export THEOS=$HOME/theos
+          cd $GITHUB_WORKSPACE
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
-      - name: Upload
+      - name: Upload deb
         uses: actions/upload-artifact@v4
         with:
-          name: deb
+          name: SettingsOrganizer.deb
           path: packages/*.deb
