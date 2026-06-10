@@ -6,7 +6,7 @@
 
 @implementation EmptyListController
 - (NSArray *)specifiers {
-    return @[];  // пустой список
+    return @[]; 
 }
 @end
 
