@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: theos/theos:latest   # Готовый образ с Theos и тулчейном
+    container: theos/theos:latest  
     steps:
       - uses: actions/checkout@v4
       - name: Build tweak
