@@ -5,39 +5,12 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: theos/theos:latest   # Готовый образ с Theos и тулчейном
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y git make curl unzip
-      - name: Install Theos
-        run: |
-          git clone --recursive https://github.com/theos/theos.git $HOME/theos
-      - name: Install iOS toolchain (clang)
-        run: |
-          cd $HOME/theos/toolchain/linux/iphone
-          # Скачиваем предварительно собранный тулчейн
-          curl -LO https://github.com/theos/toolchain/releases/download/v1.0/iphone.tar.xz
-          tar -xf iphone.tar.xz --strip-components=1
-          rm iphone.tar.xz
-      - name: Install SDK
-        run: |
-          cd $HOME/theos
-          rm -rf sdks
-          git clone https://github.com/theos/sdks.git sdks
-          cd sdks
-          SDK_DIR=$(ls -d iPhoneOS*.sdk 2>/dev/null | head -n 1)
-          if [ -z "$SDK_DIR" ]; then
-            echo "No SDK found"
-            exit 1
-          fi
-          ln -sf $SDK_DIR iPhoneOS.sdk
-          echo "Linked $SDK_DIR to iPhoneOS.sdk"
       - name: Build tweak
         run: |
-          export THEOS=$HOME/theos
-          cd $GITHUB_WORKSPACE
+          export THEOS=/opt/theos
           make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
       - name: Upload deb
         uses: actions/upload-artifact@v4
