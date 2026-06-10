@@ -10,6 +10,7 @@ include $(THEOS)/makefiles/common.mk
 TWEAK_NAME = SettingsOrganizer
 SettingsOrganizer_FILES = Tweak.xm
 SettingsOrganizer_CFLAGS = -fobjc-arc -fno-modules
+SettingsOrganizer_LDFLAGS = -framework Preferences -framework UIKit -lobjc
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
