@@ -7,14 +7,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Theos and SDK
+      - name: Install Theos
         run: |
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
+      - name: Install SDK
+        run: |
           cd $HOME/theos
+          rm -rf sdks   # Удаляем папку, если она есть
           git clone https://github.com/theos/sdks.git sdks
           cd sdks
-          # Создаём символическую ссылку на нужную версию SDK
-          ln -sf iPhoneOS16.0.sdk iPhoneOS.sdk
+          # Находим любой доступный SDK и линкуем
+          SDK_DIR=$(ls -d iPhoneOS*.sdk 2>/dev/null | head -n 1)
+          if [ -z "$SDK_DIR" ]; then
+            echo "No SDK found"
+            exit 1
+          fi
+          ln -sf $SDK_DIR iPhoneOS.sdk
+          echo "Linked $SDK_DIR to iPhoneOS.sdk"
       - name: Build tweak
         run: |
           export THEOS=$HOME/theos
