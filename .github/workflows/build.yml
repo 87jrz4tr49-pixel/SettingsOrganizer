@@ -7,16 +7,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git make curl unzip
       - name: Install Theos
         run: |
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
+      - name: Install iOS toolchain (clang)
+        run: |
+          cd $HOME/theos/toolchain/linux/iphone
+          # Скачиваем предварительно собранный тулчейн
+          curl -LO https://github.com/theos/toolchain/releases/download/v1.0/iphone.tar.xz
+          tar -xf iphone.tar.xz --strip-components=1
+          rm iphone.tar.xz
       - name: Install SDK
         run: |
           cd $HOME/theos
-          rm -rf sdks   # Удаляем папку, если она есть
+          rm -rf sdks
           git clone https://github.com/theos/sdks.git sdks
           cd sdks
-          # Находим любой доступный SDK и линкуем
           SDK_DIR=$(ls -d iPhoneOS*.sdk 2>/dev/null | head -n 1)
           if [ -z "$SDK_DIR" ]; then
             echo "No SDK found"
